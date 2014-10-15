@@ -1,0 +1,128 @@
+.TH picloud 1 "Oct 16, 2012" "2.6.0" "PiCloud"
+
+.
+.SH NAME
+picloud -- PiCloud Command-Line Interface
+.
+.SH SYNOPSIS
+picloud [options] {setup,exec,mapexec,status,result,bucket,volume,realtime}
+.
+.SH OPTIONS
+.TP
+-h
+show this help message and exit
+.TP
+--version
+Print version
+.TP
+-v
+Increase amount of information you are given during command execution
+.TP
+-o {json,no-header}
+Format of output
+.TP
+-a _API_KEY
+API key to use
+.TP
+-k _API_SECRET_KEY
+ API secret key that matches the API key
+.
+.
+.SH DESCRIPTION
+.P
+For complete documentation, see: http://docs.picloud.com/
+.P
+picloud has the following modules to facilitate interacting with PiCloud:
+.SS setup
+This module is used to setup your client computer to use the cloud. Optional Arguments:
+.P
+--help,-h: show this help message and exit
+
+--email EMAIL, -e EMAIL:    Email used to login to your PiCloud account
+
+--password PASSWORD, -p PASSWORD : Password used to login to your PiCloud account
+
+--api-key [API_KEY], -a [API_KEY]: API Key to use. If specified without a value, a new API Key will be created without prompting
+
+.SS exec
+Execute shell command on PiCloud. See http://docs.picloud.com/primer.html#creating-a-job-from-the-shell
+
+.SS mapexec
+Execute parallel commands on PiCloud. See http://docs.picloud.com/primer.html#mapping
+
+.SS status
+Obtain status of job.
+
+.SS result
+Obtain result of job. 
+ 
+
+.SS bucket
+This module is used for managing objects stored in PiCloud's key-value store. All objects are referenced by a "key".
+See http://docs.picloud.com/storage.html 
+.P
+Optional Arguments:
+
+--help,-h            show this help message and exit
+
+Commands:  {sync-to-cloud,get,sync-from-cloud,list,put,get-md5,delete}
+
+   delete              Delete an object stored on PiCloud
+   get                 Retrieve an object from PiCloud
+   get-md5             Get the md5 checksum of an object stored on PiCloud
+   list                List keys stored in your bucket
+   put                 Store an object on PiCloud
+   sync-from-cloud     Download object if it does not exist locally or 
+                       has changed
+   sync-to-cloud       Upload object only if it does not exist on PiCloud 
+	                  or has changed
+.SS volume
+This module is used for managing volumes stored on PiCloud. See http://docs.picloud.com/storage.html
+.P
+Optional Arguments:
+--help, -h            show this help message and exit
+
+Commands: {create,list,sync,ls,rm,delete}
+
+   list                List existing volumes
+   create              Create a volume on PiCloud
+   sync                Sync local directory to volume on PiCloud
+   delete              Delete a cloud volume
+   ls                  List the contents of a cloud volume [path]
+   rm                  Remove contents from a cloud volume
+   
+.SS realtime
+This module is used for managing realtime cores on PiCloud. See http://docs.picloud.com/realtime_cores.html
+.P
+Optional arguments:
+ --help, -h            show this help message and exit
+
+Commands:  {release,request,list} 
+
+   list                List realtime reservations
+   release             Release realtime cores
+   request             Request realtime cores
+.
+.
+.SH EXAMPLES 
+.P
+List files on PiCloud's storage  :   picloud files list
+
+List existing volumes            :   picloud volume list
+
+List realtime reservations       :   picloud realtime list
+.
+.
+.SH LICENSE
+All files within the PiCloud cloud client package distribution are subject to the 
+GNU Lesser General Public License v 2.1 or other open source licenses. 
+Refer to the LICENSE file of the source distribution for the details.
+
+.SH AUTHOR
+
+The PiCloud cloud client package was developed by the PiCloud team (http://www.picloud.com).
+This manual page was written by Amit Saha (amitksaha@fedoraproject.org).
+
+.SH SEE ALSO
+PiCloud Documentation: http://docs.picloud.com/
+

@@ -1,0 +1,290 @@
+# Bash completion shell script for picloud
+# Known bugs
+# 	Doesn't handle using -- arguments correctly (would need lots of test.. see single positional params)
+
+_picloud()
+{
+        local cur prev opts cmds
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        base_cmds="-h --help"
+        
+		# capture file uploads
+	    if [[ "$cur" == @* && "$prev" == '=' ]]; then
+	    	COMPREPLY=( $(compgen -f ${cur:1}) )
+	    	#echo $COMPREPLY[@]
+	    	for (( i=0; i<${#COMPREPLY[@]}; i++ )); 
+	    	do 
+	    		COMPREPLY[$i]='@'${COMPREPLY[$i]} 
+	    	done
+	    	#COMP_WORDS[$(( COMP_CWORD-1 ))]=${COMP_WORDS[COMP_CWORD-1]}'@'
+	    		    	
+	    	return 0
+	    fi         
+
+		# short-circuit:
+		if [[ "$prev" == -h || "$prev" == '--help' || "$prev" == '--version' ]]; then 
+			return 0
+		fi
+		
+		# short-circuit all positional params
+		if [[ "$prev" =~ -(a|o|k|e|m|t|r|l|x|d|n|p) ]]; then 
+			return 0
+		fi
+		
+		prev_idx=1		
+		while [[ "$prev" == -* || "${COMP_WORDS[COMP_CWORD-prev_idx-1]}" =~ -(a|o|k) ]];
+		#while [[ "$prev" == -* ]];
+		do			
+			if (( "$prev_idx" >= "$COMP_CWORD" )); then
+				break			
+			fi
+			prev_idx=$(( $prev_idx + 1 ))
+			prev="${COMP_WORDS[COMP_CWORD-prev_idx]}"
+		done
+
+		# prev2 would be the module we are in (if valid)
+		prev2_idx=$(( $prev_idx + 1 ))
+		prev2="${COMP_WORDS[COMP_CWORD-prev2_idx]}"
+		while [[ "$prev2" == -*  || "${COMP_WORDS[COMP_CWORD-prev2_idx-1]}" =~ -(a|o|k) ]];
+		do
+			if (( "$prev2_idx" >= "$COMP_CWORD" )); then
+				break			
+			fi
+			prev2_idx=$(( $prev2_idx + 1 ))
+			prev2="${COMP_WORDS[COMP_CWORD-prev2_idx]}"
+		done									
+		
+        case "${prev}" in
+                result )
+                	if [[ "$cur" == -* && "$prev2" == 'picloud' ]]; then 
+					    	cmds="$base_cmds -t --timeout -i --ignore-errors"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi                 
+                ;;
+
+                ssh | ssh-info )
+                	if [[ "$cur" == -* && "$prev2" == 'picloud' ]]; then 
+					    	cmds="$base_cmds -t --timeout"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi                 
+                ;;
+
+                info )
+                	if [[ "$cur" == -* && "$prev2" == 'picloud' ]]; then 
+					    	cmds="$base_cmds -o"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi                 
+                ;;
+        
+                files)
+					    if [[ "$cur" == -* ]]; then
+					    	cmds=$base_cmds					    
+					    else
+                        	cmds="get get-md5 delete list put sync-from-cloud sync-to-cloud"
+                        fi
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                
+                wait-for)
+					    if [[ "$cur" == -* ]]; then
+					    	cmds=$base_cmds					    
+					    else
+                        	cmds="port status"
+                        fi
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                
+                
+                bucket)
+					    if [[ "$cur" == -* ]]; then
+					    	cmds=$base_cmds					    
+					    else
+                        	cmds="get get-md5 remove remove-prefix list put sync-from-cloud sync-to-cloud make-public make-private is-public"
+                        fi
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                
+                put | sync-from-cloud) 
+					    if [[ "$prev2" != 'files' && "$prev2" != 'bucket' ]]; then # illegal..
+					    	return 0
+					    elif [[ "$cur" == -* ]]; then
+					    	cmds="$base_cmds"
+                        	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))					    						   
+					    else
+                        	COMPREPLY=( $(compgen -f ${cur}) )
+                        fi
+                        return 0        
+                ;;       
+                volume)
+                        cmds="list create sync delete ls rm"
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                list )
+                	if [[ "$prev2" == 'volume' && "$cur" == -* ]]; then 
+					    	cmds="$base_cmds -n -d --dec"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+                	elif [[ "$prev2" == 'env' && "$cur" == -* ]]; then 
+					    	cmds="$base_cmds -n --name"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0					    	
+					fi           
+                ;;
+                ls )
+                	if [[ "$prev2" == 'volume' && "$cur" == -* ]]; then 
+					    	cmds="$base_cmds -l --extended_info"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi                 
+                ;;
+
+                create )
+                	if [[ "$prev2" == 'volume' && "$cur" == -* ]]; then 
+					    	cmds="$base_cmds -d --dec"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+                	elif [[ "$prev2" == 'env' && "$cur" == -* ]]; then 
+					    	cmds="$base_cmds -d --desc"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi                 
+                ;;
+                rm )
+                	if [[ "$prev2" == 'volume' && "$cur" == -* ]]; then 
+					    	cmds="$base_cmds -r --recursive"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi                 
+                ;;
+                realtime)
+                        cmds="request release list"
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                rest)
+                        cmds="publish list info invoke mapinvoke remove"
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                publish )                	
+                	if [[ "$prev2" != 'rest' ]]; then # invalid sequence 
+                		return 0
+				    elif [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds -t --type -r --return -e --env -v --vol -i --ignore-exit-status -m --max-runtime --not-restartable -w --cwd --priority"
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi
+				;;           
+                invoke | mapinvoke )                	
+                	if [[ "$prev2" != 'rest' ]]; then # invalid sequence 
+                		return 0
+				    elif [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds  -d --data"
+				    	if [[ "$prev" == 'mapinvoke' ]]; then
+				    		cmds="$cmds -n --map-data"
+				    	fi 				    	
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi
+				;;    
+				
+                cron)
+                        cmds="register list info deregister run"
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                register )                	
+                	if [[ "$prev2" != 'cron' ]]; then # invalid sequence 
+                		return 0
+				    elif [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds -t --type -r --return -e --env -v --vol -i --ignore-exit-status -m --max-runtime --not-restartable -w --cwd --priority"
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi
+				;;           
+                
+                setup)
+					if [[ "$cur" == -* && "$prev2" == 'picloud' ]]; then 
+					    	cmds="$base_cmds --email -e --password -p --api-key -a"
+					    	COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+					    	return 0
+					fi
+                ;;
+
+
+                env)
+                        cmds="list list-bases create clone modify get-hostname get-keypath save shutdown save-shutdown delete edit-info ssh rsync run-script"
+                        COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+                        return 0
+                ;;
+                clone | rsync )                	
+                	if [[ "$prev2" != 'env' ]]; then # invalid sequence 
+                		return 0
+				    elif [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds -d"
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi
+				;;           
+
+
+                exec | mapexec )                	
+                	if [[ "$prev2" != 'picloud' ]]; then # invalid sequence 
+                		return 0
+				    elif [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds -d --data -t --type -r --return -e --env -v --vol -l --label -i --ignore-exit-status -m --max-runtime -x --depends-on --depends-on-errors --not-restartable --priority -k --copies -N --arg-file"
+				    	if [[ "$prev" == 'mapexec' ]]; then
+				    		cmds="$cmds -n --map-data"
+				    	fi 
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi           
+				;;     
+
+                exec-shell )                	
+                	if [[ "$prev2" != 'picloud' ]]; then # invalid sequence 
+                		return 0
+				    elif [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds -t --type -e --env -v --vol -m --max-runtime -k --keep-alive --timeout"
+				    	if [[ "$prev" == 'mapexec' ]]; then
+				    		cmds="$cmds -n --map-data"
+				    	fi 
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi           
+				;;     
+
+
+                picloud)
+				    if [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds --version -o -a -k -v -s --verbose --api-key --api-secretkey -- simulate"
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+				    fi
+        			
+        			opts="setup exec mapexec status result join info kill delete rest files bucket realtime volume cron env ssh ssh-info exec-shell wait-for"                
+                	COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+                	return 0
+                ;;
+                
+                *) 
+                	if [[ "$cur" == -* ]]; then
+				    	cmds="$base_cmds"
+						COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+				        return 0
+                	fi
+                
+        esac
+        return 0
+}
+complete -F _picloud picloud
+

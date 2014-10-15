@@ -1,0 +1,20 @@
+Copyright (c) 2009-2013 PiCloud, Inc. All rights reserved.  
+
+All files within the PiCloud cloud client package distribution are subject to the 
+GNU Lesser General Public License v 2.1,described within COPYING.LESSER, 
+save for the following which are covered under licenses described within 
+their respective files/directories:
+  
+  util/urllib2_file.py
+  util/cloghandler/*
+  util/cronexpr.py
+  cli/util/pseudo_terminal.py
+
+On Windows installation, the files under the extras directory in the Python
+installation location are covered under the license therein.
+
+As a necessity to operating the service, information will be passed between 
+the cloud library and the PiCloud service, including, but not limited to,
+the workloads explicitly run, and error diagnostic information.  Please see 
+our privacy statement at:
+http://www.picloud.com/privacy/

@@ -1,0 +1,11 @@
+include *.txt
+global-include INSTALL LICENSE PKG-INFO README COPYING.LESSER CHANGELOG
+global-include picloud.1 picloud
+graft bash_completion.egg
+graft doc
+prune dist/*
+prune deb_pkg/*
+prune rpm_pkg/*
+prune exe_pkg/*
+
+global-exclude *~

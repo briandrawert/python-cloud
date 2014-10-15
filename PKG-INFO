@@ -1,0 +1,42 @@
+Metadata-Version: 1.1
+Name: cloud
+Version: 2.8.5
+Summary: PiCloud client-side library
+Home-page: http://www.picloud.com
+Author: PiCloud, Inc.
+Author-email: contact@picloud.com
+License: GNU LGPL
+Description: `PiCloud <http://www.picloud.com>`_ is a cloud-computing platform that integrates into the Python Programming Language. It enables you to leverage the computing power of Amazon Web Services without having to manage, maintain, or configure virtual servers.
+        
+        When using this Python library known as *cloud*, PiCloud will integrate seamlessly into your existing code base. To offload the execution of a function to our servers, all you must do is pass your desired function into the *cloud* library. PiCloud will run the function on its high-performance cluster. As you run more functions, our cluster auto-scales to meet your computational needs. 
+        
+        Before using this package, you will need to sign up a `PiCloud <http://www.picloud.com>`_ account.
+        
+        The *cloud* library also features a simulator, which can be used without a PiCloud account.  The simulator uses the  `multiprocessing <http://docs.python.org/library/multiprocessing.html>`_ library to create a stripped down version of the PiCloud service.  This simulated service can then run jobs locally across all CPU cores.
+        
+        Quick command-line example::
+          
+        	>>> import cloud
+        	>>> def square(x):
+        	...     return x*x
+        	...     
+        	>>> jid = cloud.call(square,3)  #square(3) evaluated on PiCloud
+        	>>> cloud.result(jid)
+        	9
+        
+        Full package documentation is available at http://docs.picloud.com.  Some dependencies may be required depending on your platform and Python version; see INSTALL for more information.
+        
+        
+Platform: CPython 2.6
+Platform: CPython 2.7
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Distributed Computing
+Classifier: Topic :: System :: Networking

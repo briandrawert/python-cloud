@@ -1,0 +1,3 @@
+[console_scripts]
+picloud = cloud.cli.main:main
+

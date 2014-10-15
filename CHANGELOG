@@ -1,0 +1,430 @@
+Changelog
+
+Version 2.8.5 (August 20, 2013):
+-Fix bug with md5 mismatches from server-side
+-Fix bug with _os_env_vars not being respected when automatic dependewncy transfer disabled
+
+Version 2.8.4 (July 23, 2013):
+-Add ability for cloud.info to query 'func_object', 'args', and 'kwargs' of a job:
+	Allows retrieving of original function, job arguments, and job keyword arguments respectively
+-Fix bugs with sudo handling across the board
+
+Version 2.8.3 (July 18, 2013):
+-Fix depends_on not working in CLI
+-picloud setup no longer brings up web browser if email and password provided
+  --if no api key provided under this scenario, create a new one for the machine
+
+Version 2.8.2 (July 16, 2013):
+-Add cloud.set_dependency_whitelist() to provide a means to limit what packages are automatically transferred
+-Fix picloud join $JID
+
+Version 2.8.1 (July 8, 2013):
+-Add cloud.bucket.mpsafe_get / picloud bucket mp-safe: Multiprocessing safe version of get (atomic get)
+	If not sync/do_sync: Only get file if not present
+	If sync: same policy as sync_from_cloud w/ locking
+-Fix bucket get MD5 verification bugs on Windows
+-bucket.remove() can now take infinite bucket objects
+-Add automatic_dependency_transfer configuration option. If set to False in cloudconf.py, disable 
+	automatic python dependency transfer system (effectively requires that apps be deployed)
+
+Version 2.8.0 (June 21, 2013):
+-Add picloud exec-shell : Creates an ssh session w/ desired environment, volume parameters (for testing)
+-Improved support for batch removes
+	-0cloud.bucket.remove() now takes up to 1,000 bucket objects
+	--add cloud.bucket.remove_prefix() -- allows for batch removal of bucket objects
+  		--supported in CLI as picloud bucket remove-prefix  
+-picloud ssh can accept an optional command
+-_os_env_vars can now accept a dictionary
+-various bug fixes
+
+
+Version 2.7.9 (April 22, 2013):
+-volume CLI properly sets permission bits even for files using Windows ACL
+
+Version 2.7.8 (April 19, 2013):
+-Add _os_env_vars support: Allows transferring of environment variables
+-Fix windows 32 bit picloud.exe
+
+Version 2.7.7 (April 8, 2013):
+-Environment CLI support added
+-Windows support for job ssh
+-Fixed a few bugs in picloud mapexec
+
+Version 2.7.6 (April 3, 2013):
+-Queue API changes (breaks attachment api)
+	-Queue API now solid
+
+Version 2.7.5 (March 29, 2013):
+-Significant queue API changes
+--Adds retry functionality
+
+Version 2.7.4 (March 20, 2013):
+-Add MessageTicket system to queue to ensure robustness in message handling
+-Add on_error to queue attach for error handling
+-API improvements:
+	-Improve naming: change delete to delete_queue
+	-make list() return Queue objects
+
+Version 2.7.3 (March 13, 2013):
+-add -N (--arg-file) to mapexec to allow reading job arguments from a file (rather than the comma separated -n)
+-add -k (--copies) to mapexec to allow easy duplication of jobs
+-Cleanup bugs in cloud.queue
+-add --priority to cli
+
+Version 2.7.2 (February 27, 2013):
+-Add cloud.queue
+-more robustness in buckets
+-help tips in exceptions
+
+Version 2.7.1 (January 25, 2013):
+-New browser-based authentication system for picloud setup
+	-Fix bugs w/ email/password auth
+-Make cloud.bucket.get(f) even more robust
+-Fix simulator problems with mechanize exceptions
+
+Version 2.7.0 (January 11, 2013):
+-picloud ssh doesn't prompt for connecting to server
+-Further resolve low-level network bugs
+-clean up some errors messages
+
+Version 2.6.9 (December 21, 2012):
+-Fix some rarely seen low-level network bugs
+-Add requirement to cloud.bucket.putf() that file f be seekable
+
+Version 2.6.8 (December 20, 2012):
+-Fix files missing in distribution
+-Clean up debug messages in picloud ssh
+-picloud ssh saner on windows
+
+Version 2.6.7 (December 19, 2012):
+-added picloud ssh jid -- Ability to ssh into jobs (sorry, no windows support yet)
+-picloud ssh-info - obtain information to ssh into jobs (all platforms)
+-cloud.shortcuts.get_connection_info -- translate a port a job is listening on to external port
+-cloud.wait_for python api -- wait for ports to open/statuses 
+-cloud.info('ports') now shows integer ports rather than strings
+-add checksum layers to cloud.buckets -- ensures storage is consitent even on overwrites
+
+Version 2.6.6 (December 12, 2012):
+-Many features added to cloud.bucket:
+	-all commands take a "prefix" for easy namespacing. See docs
+	-iterlist() -- Exhaustive listing of keys
+	-list reports truncation
+	-make_public() -- accepts a headers dictionary to customize response headers
+	-bucket.info - obtain meta-data (size, md5, timestamps) about object
+	-Better key sanity checking
+	-standardize naming. obj-path refers to object location; file-path refers to location on filesystem
+-Better error handling in volume sync
+-No longer rewind files when transmitting w/ cloud.files/cloud.bucket
+-module doc cleanup	
+	
+Version 2.6.5 (November 19, 2012):
+-Resolve issue with imports not being scanned when running python -m
+-Provide access to more job information with cloud.info
+
+Version 2.6.4 (November 13, 2012):
+-Solve bug where cloud.result() could not access more than 10k jids
+
+Version 2.6.3 (November 12, 2012):
+-IMPORTANT: Change cloud.bucket.list parameter order!
+-Fix bugs with celery daemon
+-cloud.bucket.get will create directory if it doesn't exist
+-Resolve logging errors on windows
+-shell exec avoids transporting superfluous modules
+-shell exec upload correctly writes files to cwd
+-shell exec upload writes all files w/ execute bit set (allows scripts to be uploaded)
+-volume sync has retry ability
+-vilume sync has ability to delete files (use carefully!)
+-volumes support relative path
+-shell exec supports simulator
+
+Version 2.6.0 (October 16, 2012):
+-cloud.bucket.list supports compacting keys into folders delimited by '/'
+-Added many new info items to cloud.info (to match what job details webpage shows)
+-Better network diagnostics when client cannot connect to PiCloud servers
+-Allow shell exec to use any environment irrespective of Python version
+-picloud cli status/result/etc treat jid ranges inclusively. jids 1-3 refers to jid 1, 2, and 3
+-Resolve serializing self-referencial classes
+-add option to set current working directory to exec/mapexec
+-Fix bugs involving unicode and cloud.bucket
+-Various documentation improvements
+-Save pid in cloud.log.
+
+Version 2.5.9 (September 6, 2012):
+-Fix up bugs with _cores handling
+-Add -c/--cores option to picloud exec and friends (cli)
+-Add some missing picloud bucket options to the picloud cli
+
+Version 2.5.8 (September 4, 2012):
+-Split cloud.log by pid. See ~/.picloud/cloudlog-by-pid 
+ --Support windows concurrent logging better. Gracefully fail if pywin32 not present
+-Documentation for _cores option
+
+Version 2.5.7 (August 29, 2012):
+-Fix problem with main.__file__ being None blocking call from working
+-Fix some setup bugs in sudo mode
+-doc updates
+
+Version 2.5.6 (August 8, 2012):
+-Add cloud.buckets -- a more advanced version of cloud.files
+-Improve dependency finding in some contexts
+
+Version 2.5.5 (July 13, 2012):
+-Fix critical bug with picloud setup
+
+Version 2.5.4 (July 7, 2012):
+-New functionality for cloud.volume
+
+Version 2.5.3 (June 26, 2012):
+-Windows support for cloud.volume
+-Add F2 to documation
+
+Version 2.5.2 (June 14, 2012):
+-Correctly support very large functions being passed through cloud.map
+
+Version 2.5.1 (June 5, 2012):
+-Handle global variables across functions correctly
+
+Version 2.5.0 (June 4, 2012):
+-Shell exec added: Easy wrapper to run arbitrary commands in bash on PiCloud
+	-Many commands in CLI: picloud exec, picloud mapexec
+	-Accessable in python with cloud.shell
+-Added support to CLI for accessing job info (status, result, etc.) and killing jobs
+-Added rest and cron to CLI
+-Namedtuples can now be passed as arguments/return values
+-Significant improvements to bash completion script
+-New installers for different platforms
+
+
+Version 2.4.6 (April 13, 2012):
+-cloud.files.map() bug fixed
+-Setup scripts now properly handle root and prefix options 
+-General bug fixes
+
+Version 2.4.5 (March 28, 2012):
+-Provide access to many more fields w/ cloud.info
+-Fix broken cloud.rest.info
+-Fixed bugs with cloud.files cli
+
+Version 2.4.4 (March 23, 2012):
+-Add _depends_on_errors to cloud.call/map.  Setting this to 'ignore' allows an errored job to satisfy a dependency (rather than stalling it)
+-Fix various pickling bugs, including django support and infinite recursion
+-Installer requires setuptools
+
+Version 2.4.3 (March 15, 2012):
+-Add _max_runtime to cloud.call/map. Job will be auto-killed if it runs more than max_runtime minutes
+-Add max_duration to cloud.realtime; realtime requests will be automatically released after they have been active for max_duration hours
+-Allow unicode filenames in cloud.files
+-Add multi-volume support; _vol now can accept a list of volumes
+-Resolve bug with {} characters not being handled correctly in cloud.info
+-Resolve bugs with empty files stored in cloud.files
+
+Version 2.4.2 (March 4, 2012):
+-Increase network reliability
+-Add picloud man page and bash completion scripts
+
+Version 2.4.1 (February 16, 2012):
+-Add cloud.volumes: An easy way to synchronize your data with the cloud
+-Fix up some unicode error handling bugs
+-Add --verbose (-v) option to cli
+
+Version 2.4.0 (January 26, 2012):
+-Command line interface (CLI) to manage picloud accounts
+-Deprecated passing through api_secretkey in cloud.setkey; use CLI:  'picloud setup'
+-Cloud.files.map: effeciently process a file stored in cloud.files in parallel
+-Realtime management functions have been moved to cloud.realtime.
+	-cloud.account now offers programmatic key management
+
+Version 2.3.9 (October 29, 2011):
+-Add cloud.files syncronizing ability. 
+--See cloud.files.sync_to_cloud and cloud.files.sync_from_cloud. 
+--md5 checksum of uploaded files also now exposed with cloud.files.get_md5
+--Added additional sanity checks with cloud.files.putf
+-Fix bug where simulator would fail to terminate in Python2.7.2
+-Supress 'degrade' messages
+-Additional hacks for django
+
+Version 2.3.8 (October 4, 2011):
+-Resolve client getting into inconsistent state if PiCloud service fails to accept modules
+
+Version 2.3.7 (October 1, 2011):
+-More django related hacks. 
+
+Version 2.3.6 (September 29, 2011):
+-Add hack to forcibly transport django settings if found
+
+Version 2.3.5 (September 22, 2011):
+-Fix proxy support for python2.7
+-Limit map jobs to 10,000 arguments
+
+Version 2.3.4 (September 21, 2011):
+-Add code to purge old serialization logs
+	(warning: you may see a minute or more of stalling when you use cloud as it deletes logs)
+	Configurable with purge_days in cloudconf.py (you'll need to delete file to rebuild it)
+-Fix support for module transport in django shell
+-Fix bug where cloud would hold on to import lock
+-Fix support for proxy servers 
+--Note: your proxy server must support http and https and python version must be at least 2.6.1
+--It will be autodetected if operating system set up correctly
+--Otherwise, set proxy_server to cloudconf.py (you'll need to delele file to rebuild it)
+
+Version 2.3.3 (September 14, 2011):
+-change cloud.rest interface to publish and remove
+-cloud.rest provides function signature to PiCloud
+	-This allows the PiCloud server to check arguments before creating a job 
+-cloud.call checks function signature against arguments client-side
+-Added back priority
+-Fix cloud.account (realtime provisioning)
+
+Version 2.3.2 (August 24, 2011):
+-Fixed up mod version checks crashing
+-Add support for s1 compute resource type
+-Improve unicode support across the board
+-Documentation updates
+
+Version 2.3.1 (August 13, 2011):
+-Added support for PiCloud REST API (See docs)
+-Temporarily remove concurrent rotating log handler
+-Make _depends_on work correctly with new API
+
+Version 2.3.0 (July 28, 2011):
+-_high_cpu has been replaced by the concept of compute resource types.  _type=c2 is equivilent to the now deprecated _high_cpu.
+   Futhermore, it is now possible to run jobs that utilize up to 8 GB of RAM on PiCloud with _type=m1!
+-Significant changes to PiCloud protocol.  Reports errors more sanely, retries more rationally, and obeys REST standards
+-Removed api key management from cloud.account 
+-cloud.mp/Simulator more stable, especially during shut down
+-Various minor bug fixes
+
+Version 2.2.4 (June 24, 2011):
+-Add cloud.close() to forcibly close cloud (useful for shutting down threads cloud spawns)
+-Windows only: Make cloud work even if pywin32 not installed. pywin32 downgraded to 'recommended package'
+-Windows: Fix bug with logging exceptions being raised on cleanup
+-Ready PiCloud client for future PiCloud features
+-obey PEP 8 in internal code (use underscore_case rather than camelCase for functions)
+-Clean up some documenation
+-Internal speed ups to xrange handlers
+-cloud.files bug fixes
+-support stdout/stderr from running jobs
+
+Version 2.2.2 (April 13, 2011):
+-fix up set up script
+-Minor bugfixes
+
+Version 2.2.1 (February 10, 2011):
+-Hack fix to serialize scikits.timeseries correctly
+-Internal network changes
+
+Version 2.2 (Feburary 4, 2011):
+-Added beta support for python 2.7
+--Almost everything works, except that custom C extensions cannot yet be compiled for python2.7
+-Improved networking protocol
+--Correct connection bugs when in SSL mode
+-Changed join policy to error as soon as any error is detected. 
+--Results in errors being noticed faster
+
+Version 2.1.5 (December 10, 2010):
+-Fixed ignore_errors being incorrectly camelCased as ignoreErrors
+
+Version 2.1.4 (December 9, 2010):
+-PiCloud shows traceback when viewing a killed job. 
+-Added support for ignore_errors to join, result, and iresult
+-fix bug where iresult could deadlock
+
+Version 2.1.3 (November 20, 2010): 
+-Changed cloud.account to use api_key rather than user/password combination
+-Added ability to manage realtime units with cloud.account
+-Correct types for cloud.account return values
+-Fixed support for python < 2.5.2
+-Improved setup process for windows users.
+
+Version 2.1.2 (September 24, 2010):
+-Fix bug with HTTP handling that could cause duplicate requests to be sent.
+-Additional debugging information
+-Do not cache runtime cloud.info requests
+
+Version 2.1.1 (September 8, 2010):
+-Added _kill_process flag for cloud.call/map. Setting this to true prevents the process that runs the invoked 
+function from being run again.
+
+Version 2.1.0 (August 18, 2010):
+-Persistent HTTP(S) connection - significant network traffic improvement
+-Can view exception information as text with cloud.info
+-cloud.connection_info() will show HTTPS if connected securely
+-better debug statements for network traffic
+
+Version 2.0.0 (August 6, 2010):
+-Added cloud.cron to leverage cron support
+-cloud.kill() can now be used with no arguments to kill every running and queued job.
+-Add support for passing function kwargs into cloud.call (e.g. cloud.call(foo, a=3) to run foo(a=3)
+-Additional bug fixes
+
+Version 1.9.8 (July 20, 2010):
+-Fixed up issue with large numbers of map jobs occasionally timing out.
+
+Version 1.9.7 (July 17, 2010):
+-Client support for python2.7. (NOTE: server does not fully support py2.7. It will by Aug 1, 2010)
+-Support pickling of stdout/stdin  
+
+Version 1.9.6:
+-Fixed up some memory leaks and bugs with installer
+-cloud will work even if ~/.picloud directory cannot be created
+
+Version 1.9.5:
+-Added cloud.files -- An API to store data on the cloud
+-Significant improvements in overall network protocol. Is now much more reliable
+-Fixed various bugs in simulator
+
+Version 1.9:
+-Significant modifications to data serialization handling reduce memory usage and serialization time
+-Modifications to map protocol to allow jobs to start being processed before cloud.map() returns
+-_fast_serialization option to speed up argument and result serialization
+
+Version 1.8.3:
+-Pickle numpy ufunc
+-Simulation and cloud.mp (but not yet the cloud server) detects if sys.exit() is called in a running job.
+	Remember: You should NEVER call sys.exit() within a running job
+-_restartable option is true by default
+
+Version 1.8.2:
+-_profile option is false by default
+-Bug fixes in dependency analyzer
+
+Version 1.8.1:
+-Moved cloud.conf on windows to %APPDATA%
+-Added cloud.getconfigpath() to see where configuration file is stored
+-Added _profile option to disable profiling
+-Transmit module version information with cloud.call/cloud.map
+-Various bug fixes
+
+Version 1.8:
+-Deal with UNICODE labels, functions, and directories more sanely (see documentation)
+-Don't fail to deserialize pickles if requested modules cannot load
+-Added cloud.__version__
+-More bugs fixed
+
+Version 1.7:
+-Reduce number of empty datalog directories created
+-Added _high_cpu keyword argument
+-various bug fixes
+
+Version 1.6:
+-Added cloud.accounts to provision API keys via python
+-Added cloud.pool which emulator multiprocessing.pool interface
+-Cloud client now open-sourced under LGPL license
+-Various bugs fixed with serialization logging
+-functools.partial can now be serialized
+
+version 1.5:
+-cloud/cloud.mp interoperability works correctly now.
+-Fixed bug where serialization logs were not saved
+-Greatly sped up dependency analysis
+-Corrected bugs with dependency analysis
+-Added ability to pickle read-only files and PIL Images
+-Added ability to transport and analyze Python Egg/Zips
+-Improved caching system, resulting in lower memory usage.
+-cloud.map() now returns an xrange describing jids rather than a list
+-cloud.status/result/etc accept an xrange of jids and make use of 'piece-wise' xrange objects for more efficient memory and network usage
+-Added cloud.iresult() to iterate through results: See documentation.
+-drastically sped up cloud.join/cloud.result in simulation and cloud.mp
+ 
+Version 1.0:
+-Initial release
